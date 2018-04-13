@@ -83,7 +83,7 @@ class App extends React.Component {
         <div>Log in to create new posts</div>
         <ul>
           {this.props.data.allLists.map((list, i) => (
-            <li key={i}>{list.id}</li>
+            <li key={i}>{list.id} - {list.name}</li>
           ))}
         </ul>
       </div>
@@ -111,6 +111,8 @@ const ALL_LISTS_QUERY = gql`
   query {
     allLists {
       id
+      name
+      image
     }
   }
 `
