@@ -81,6 +81,11 @@ class App extends React.Component {
       <div>
         <div onClick={this.login}>Log in with Facebook</div>
         <div>Log in to create new posts</div>
+        <ul>
+          {this.props.data.allLists.map((list, i) => (
+            <li key={i}>{list.id}</li>
+          ))}
+        </ul>
       </div>
     )
   }
@@ -102,7 +107,18 @@ const LOGGED_IN_USER = gql`
   }
 `
 
+const ALL_LISTS_QUERY = gql`
+  query {
+    allLists {
+      id
+    }
+  }
+`
+
+const options = { fetchPolicy: 'network-only'};
+
 export default compose(
-  graphql(LOGGED_IN_USER, { options: { fetchPolicy: 'network-only'}}),
+  graphql(LOGGED_IN_USER, { options }),
+  graphql(ALL_LISTS_QUERY, { options }),
   graphql(AUTHENTICATE_FACEBOOK_USER, { name: 'authenticateUserMutation' })
 )(withRouter(App))

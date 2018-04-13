@@ -4,13 +4,13 @@ import React from 'react'
 import { render } from 'react-dom'
 
 // Apollo
-import ApolloClient from 'apollo-boost'
 
 import { concat } from 'apollo-link'
 import { ApolloLink } from 'apollo-link'
+import { ApolloClient } from 'apollo-client'
 import { ApolloProvider } from 'react-apollo'
-import { createHttpLink } from 'apollo-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { createHttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
 
 // Router
 import { Route } from 'react-router-dom'
