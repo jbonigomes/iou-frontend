@@ -18,7 +18,7 @@ import { Switch } from 'react-router-dom'
 import { BrowserRouter } from 'react-router-dom'
 
 // Components
-import App from './App'
+import App from './components/App'
 
 const httpLink = createHttpLink({
   uri: 'https://api.graph.cool/simple/v1/cjfh6nor13ecz0103xirfsl94'
