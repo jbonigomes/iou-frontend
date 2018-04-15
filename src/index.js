@@ -30,7 +30,7 @@ const httpLink = createHttpLink({
 const authMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext({
     headers: {
-      authorization: localStorage.getItem('graphcoolToken') || null
+      Authorization: `Bearer ${localStorage.getItem('graphcoolToken')}` || null
     }
   })
 

@@ -17,14 +17,6 @@ import Lists from './Lists'
 
 init()
 
-const AUTHENTICATE_FACEBOOK_USER = gql`
-  mutation AuthenticateUserMutation($facebookToken: String!) {
-    authenticateUser(facebookToken: $facebookToken) {
-      token
-    }
-  }
-`
-
 const LOGGED_IN_USER = gql`
   query LoggedInUser {
     loggedInUser {
@@ -33,22 +25,31 @@ const LOGGED_IN_USER = gql`
   }
 `
 
-const fbLogin = (client) => {
-  return () => {
-    login(async facebookResponse => {
-      if (facebookResponse.status === 'connected') {
-        const { data } = await client.mutate({
-          mutation: AUTHENTICATE_FACEBOOK_USER,
-          variables: { facebookToken: facebookResponse.authResponse.accessToken }
-        })
+const GET_USER_ID = gql`
+  query getUserId($id: ID) {
+    User(id: $id) {
+      facebookUserId
+    }
+  }
+`
 
-        localStorage.setItem('graphcoolToken', data.authenticateUser.token)
-        window.location.reload()
-      } else {
-        console.warn('User did not authorize the Facebook application.')
+const doLogin = (client) => {
+  return () => {
+    return login(client, (err, success) => {
+      if (err) {
+        alert(`login error: ${err}`)
+      }
+      else {
+        alert(`login success: ${success}`)
       }
     })
   }
+}
+
+const doLogout = () => {
+  return logout(() => {
+    alert('logged out')
+  })
 }
 
 const App = () => {
@@ -69,27 +70,41 @@ const App = () => {
 
         if (data.loggedInUser && data.loggedInUser.id !== '') {
           return (
-            <div>
-              <div>Logged in as ${data.loggedInUser.id}</div>
-              <div onClick={logout}>Logout</div>
-              <Lists />
-            </div>
+            <Query query={GET_USER_ID} variables={{ id: data.loggedInUser.id }}>
+              {({ loading, error, data }) => {
+                if (loading) {
+                  return (
+                    <CircularProgress id="loading-user" />
+                  )
+                }
+
+                if (error) {
+                  return (
+                    <div>Error loading user: {error.message}</div>
+                  )
+                }
+
+                return (
+                  <div>
+                    <img src={`https://graph.facebook.com/${data.User.facebookUserId}/picture`} />
+                    <Button flat onClick={doLogout}>Logout</Button>
+                    <Lists />
+                  </div>
+                )
+              }}
+            </Query>
           )
         }
 
         return (
           <ApolloConsumer>
             {client => (
-              <div>
-                <Button
-                  flat
-                  onClick={fbLogin(client)}
-                  iconEl={<FontIcon>face</FontIcon>}
-                >
-                  Log in with Facebook
-                </Button>
-                <Lists />
-              </div>
+              <Button
+                flat
+                onClick={doLogin(client)}
+                iconEl={<FontIcon>face</FontIcon>}>
+                Log in with Facebook
+              </Button>
             )}
           </ApolloConsumer>
         )

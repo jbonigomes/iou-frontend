@@ -1,4 +1,19 @@
 /* global FB */
+import gql from 'graphql-tag'
+
+const AUTHENTICATE_FACEBOOK_USER = gql`
+  mutation AuthenticateUserMutation($facebookToken: String!) {
+    authenticateUser(facebookToken: $facebookToken) {
+      id
+      token
+    }
+  }
+`
+
+/**
+ * This has to be called before you can call login
+ * It inserts the Facebook sdk into the app and initialise it with the app id
+ */
 export const init = () => {
   window.fbAsyncInit = () => {
     FB.init({
@@ -20,12 +35,33 @@ export const init = () => {
   }(document, 'script', 'facebook-jssdk'))
 }
 
-export const login = (next) => {
-  const scope = 'public_profile,email'
-  FB.login(response => next(response), { scope })
+/**
+ * This does a Facebook login then sends the token to Graph.cool
+ * which in turn gives us back the graph.cool user 'id' auth 'token'
+ */
+export const login = (client, next) => {
+  FB.login(async facebookResponse => {
+    if (facebookResponse.status === 'connected') {
+      const { data } = await client.mutate({
+        mutation: AUTHENTICATE_FACEBOOK_USER,
+        variables: { facebookToken: facebookResponse.authResponse.accessToken }
+      })
+
+      localStorage.setItem('graphcoolUserId', data.authenticateUser.id)
+      localStorage.setItem('graphcoolToken', data.authenticateUser.token)
+
+      next(null, 'Successfully logged in')
+    } else {
+      next('Facebook login error')
+    }
+  }, { scope: 'public_profile,email' })
 }
 
-export const logout = () => {
+/**
+ * Used to clear users' data
+ */
+export const logout = (next) => {
   localStorage.removeItem('graphcoolToken')
-  window.location.reload()
+  localStorage.removeItem('graphcoolUserId')
+  next()
 }
