@@ -1,10 +1,13 @@
+import './index.css'
+
 // React
 import React from 'react'
-
 import { render } from 'react-dom'
 
-// Apollo
+// Fonts
+import WebFontLoader from 'webfontloader';
 
+// Apollo
 import { concat } from 'apollo-link'
 import { ApolloLink } from 'apollo-link'
 import { ApolloClient } from 'apollo-client'
@@ -29,14 +32,20 @@ const authMiddleware = new ApolloLink((operation, forward) => {
     headers: {
       authorization: localStorage.getItem('graphcoolToken') || null
     }
-  });
+  })
 
-  return forward(operation);
+  return forward(operation)
 })
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: concat(authMiddleware, httpLink)
+})
+
+WebFontLoader.load({
+  google: {
+    families: ['Roboto:300,400,500,700', 'Material Icons']
+  }
 })
 
 render(

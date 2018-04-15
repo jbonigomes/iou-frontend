@@ -1,6 +1,9 @@
 import React from 'react'
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
+
 import { Query } from 'react-apollo'
+
+import { CircularProgress } from 'react-md';
 
 const ALL_LISTS_QUERY = gql`
   query {
@@ -18,7 +21,7 @@ const Lists = () => {
       {({ loading, error, data }) => {
         if (loading) {
           return (
-            <div>Loading list...</div>
+            <CircularProgress id="loading-lists" />
           )
         }
 
@@ -29,11 +32,13 @@ const Lists = () => {
         }
 
         return (
-          <ul>
-            {data.allLists.map((list, i) => (
-              <li key={i}>{list.id} - {list.name}</li>
-            ))}
-          </ul>
+          <div>
+            <ul>
+              {data.allLists.map((list, i) => (
+                <li key={i}>{list.id} - {list.name}</li>
+              ))}
+            </ul>
+          </div>
         )
       }}
     </Query>

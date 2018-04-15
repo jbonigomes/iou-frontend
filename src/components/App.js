@@ -1,9 +1,15 @@
 import React from 'react'
-import gql from 'graphql-tag';
+
+import gql from 'graphql-tag'
+
+import { withRouter } from 'react-router'
 
 import { Query } from 'react-apollo'
-import { graphql } from 'react-apollo'
-import { withRouter } from 'react-router'
+import { ApolloConsumer } from 'react-apollo'
+
+import { Button } from 'react-md'
+import { FontIcon } from 'react-md'
+import { CircularProgress } from 'react-md'
 
 import { init, login, logout } from '../facebook/auth'
 
@@ -27,18 +33,22 @@ const LOGGED_IN_USER = gql`
   }
 `
 
-const fbLogin = () => {
-  login(async facebookResponse => {
-    if (facebookResponse.status === 'connected') {
-      const graphcoolResponse = await graphql(AUTHENTICATE_FACEBOOK_USER)({
-        variables: { facebookToken: facebookResponse.authResponse.accessToken }
-      })
-      localStorage.setItem('graphcoolToken', graphcoolResponse.data.authenticateUser.token)
-      window.location.reload()
-    } else {
-      console.warn('User did not authorize the Facebook application.')
-    }
-  })
+const fbLogin = (client) => {
+  return () => {
+    login(async facebookResponse => {
+      if (facebookResponse.status === 'connected') {
+        const { data } = await client.mutate({
+          mutation: AUTHENTICATE_FACEBOOK_USER,
+          variables: { facebookToken: facebookResponse.authResponse.accessToken }
+        })
+
+        localStorage.setItem('graphcoolToken', data.authenticateUser.token)
+        window.location.reload()
+      } else {
+        console.warn('User did not authorize the Facebook application.')
+      }
+    })
+  }
 }
 
 const App = () => {
@@ -47,7 +57,7 @@ const App = () => {
       {({ loading, error, data }) => {
         if (loading) {
           return (
-            <div>Loading app...</div>
+            <CircularProgress id="loading-app" />
           )
         }
 
@@ -68,12 +78,20 @@ const App = () => {
         }
 
         return (
-          <div>
-            <div onClick={fbLogin}>
-              Log in with Facebook
-            </div>
-            <Lists />
-          </div>
+          <ApolloConsumer>
+            {client => (
+              <div>
+                <Button
+                  flat
+                  onClick={fbLogin(client)}
+                  iconEl={<FontIcon>face</FontIcon>}
+                >
+                  Log in with Facebook
+                </Button>
+                <Lists />
+              </div>
+            )}
+          </ApolloConsumer>
         )
       }}
     </Query>
