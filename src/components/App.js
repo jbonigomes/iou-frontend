@@ -52,6 +52,8 @@ const doLogout = () => {
   })
 }
 
+const getFbImageUrl = id => `https://graph.facebook.com/${id}/picture`
+
 const App = () => {
   return (
     <Query query={LOGGED_IN_USER}>
@@ -86,7 +88,10 @@ const App = () => {
 
                 return (
                   <div>
-                    <img src={`https://graph.facebook.com/${data.User.facebookUserId}/picture`} />
+                    <img
+                      alt="Facebook avatar"
+                      src={getFbImageUrl(data.User.facebookUserId)}
+                    />
                     <Button flat onClick={doLogout}>Logout</Button>
                     <Lists />
                   </div>
