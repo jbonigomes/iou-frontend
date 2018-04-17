@@ -3,7 +3,13 @@ import gql from 'graphql-tag'
 
 import { Query } from 'react-apollo'
 
-import { CircularProgress } from 'react-md';
+import { List } from 'react-md'
+import { Button } from 'react-md'
+import { ListItem } from 'react-md'
+import { CircularProgress } from 'react-md'
+
+import ListMenu from './ListMenu'
+import ListImage from './ListImage'
 
 const ALL_LISTS_QUERY = gql`
   query {
@@ -11,9 +17,14 @@ const ALL_LISTS_QUERY = gql`
       id
       name
       image
+      bought {
+        price
+      }
     }
   }
 `
+
+const sumPrice = (list) => list.reduce((a, b) => a + b.price, 0) || '0.00'
 
 const Lists = () => {
   return (
@@ -33,11 +44,18 @@ const Lists = () => {
 
         return (
           <div>
-            <ul>
+            <List className="md-cell md-paper md-paper--1 iou-list">
               {data.allLists.map((list, i) => (
-                <li key={i}>{list.id} - {list.name}</li>
+                <ListItem
+                  key={i}
+                  primaryText={list.name}
+                  rightIcon={<ListMenu id={i} />}
+                  secondaryText={sumPrice(list.bought)}
+                  leftAvatar={<ListImage image={list.image} />}
+                />
               ))}
-            </ul>
+            </List>
+            <Button floating primary>add</Button>
           </div>
         )
       }}
