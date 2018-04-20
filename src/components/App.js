@@ -7,7 +7,9 @@ import { withRouter } from 'react-router'
 import { Query } from 'react-apollo'
 import { ApolloConsumer } from 'react-apollo'
 
+import { Drawer } from 'react-md'
 import { Button } from 'react-md'
+import { Toolbar } from 'react-md'
 import { FontIcon } from 'react-md'
 import { CircularProgress } from 'react-md'
 
@@ -52,6 +54,16 @@ const doLogout = () => {
   })
 }
 
+let drawerVisible = false;
+
+const toggleDrawer = () => {
+  drawerVisible = !drawerVisible
+}
+
+const handleVisibility = (visibility) => {
+  drawerVisible = visibility
+}
+
 const getFbImageUrl = id => `https://graph.facebook.com/${id}/picture`
 
 const App = () => {
@@ -88,11 +100,27 @@ const App = () => {
 
                 return (
                   <div>
-                    <img
-                      alt="Facebook avatar"
-                      src={getFbImageUrl(data.User.facebookUserId)}
+                    <Toolbar
+                      colored
+                      nav={(
+                        <Button icon onClick={toggleDrawer}>menu</Button>
+                      )}
+                      title="Lists"
+                      actions={(
+                        <img
+                          onClick={doLogout}
+                          alt="Facebook avatar"
+                          src={getFbImageUrl(data.User.facebookUserId)} />
+                      )}
                     />
-                    <Button flat onClick={doLogout}>Logout</Button>
+                    <Drawer
+                      type={Drawer.DrawerTypes.TEMPORARY}
+                      visible={drawerVisible}
+                      onVisibilityChange={handleVisibility}
+                      header={(
+                        <h1>hi</h1>
+                      )}
+                    />
                     <Lists />
                   </div>
                 )
