@@ -55,7 +55,7 @@ const Lists = () => {
                 />
               ))}
             </List>
-            <Button floating primary>add</Button>
+            <Button floating primary fixed fixedPosition="br">add</Button>
           </div>
         )
       }}
