@@ -3667,3 +3667,10 @@ body {
   right: 16px;
   bottom: 16px;
   position: fixed; }
+
+@media screen and (min-width: 1025px) {
+  .md-btn--icon {
+    width: 50px;
+    height: 50px; }
+    .md-btn--icon .md-tile-addon--icon {
+      height: 24px; } }

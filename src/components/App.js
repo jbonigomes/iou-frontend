@@ -54,19 +54,19 @@ const doLogout = () => {
   })
 }
 
-let drawerVisible = false;
-
-const toggleDrawer = () => {
-  drawerVisible = !drawerVisible
-}
-
-const handleVisibility = (visibility) => {
-  drawerVisible = visibility
-}
-
 const getFbImageUrl = id => `https://graph.facebook.com/${id}/picture`
 
-const App = () => {
+const App = ({ drawerVisible }) => {
+  const toggleDrawer = () => {
+    drawerVisible = !drawerVisible
+    console.log('toggling:', drawerVisible)
+  }
+
+  const handleVisibility = (visibility) => {
+    drawerVisible = visibility
+    console.log('hadling:', drawerVisible)
+  }
+
   return (
     <Query query={LOGGED_IN_USER}>
       {({ loading, error, data }) => {
@@ -103,7 +103,11 @@ const App = () => {
                     <Toolbar
                       colored
                       nav={(
-                        <Button icon onClick={toggleDrawer}>menu</Button>
+                        <Button
+                          icon
+                          onClick={toggleDrawer}>
+                          menu
+                        </Button>
                       )}
                       title="Lists"
                       actions={(
@@ -114,12 +118,10 @@ const App = () => {
                       )}
                     />
                     <Drawer
-                      type={Drawer.DrawerTypes.TEMPORARY}
                       visible={drawerVisible}
+                      type={Drawer.DrawerTypes.TEMPORARY}
                       onVisibilityChange={handleVisibility}
-                      header={(
-                        <h1>hi</h1>
-                      )}
+                      header={<h1>hi</h1>}
                     />
                     <Lists />
                   </div>

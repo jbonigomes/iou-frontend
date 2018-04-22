@@ -3,7 +3,9 @@ import gql from 'graphql-tag'
 
 import { Query } from 'react-apollo'
 
+import { Cell } from 'react-md'
 import { List } from 'react-md'
+import { Grid } from 'react-md'
 import { Button } from 'react-md'
 import { ListItem } from 'react-md'
 import { CircularProgress } from 'react-md'
@@ -43,20 +45,22 @@ const Lists = () => {
         }
 
         return (
-          <div>
-            <List className="md-cell md-paper md-paper--1 iou-list">
-              {data.allLists.map((list, i) => (
-                <ListItem
-                  key={i}
-                  primaryText={list.name}
-                  rightIcon={<ListMenu id={i} />}
-                  secondaryText={sumPrice(list.bought)}
-                  leftAvatar={<ListImage image={list.image} />}
-                />
-              ))}
-            </List>
+          <Grid>
+            <Cell size={6} phoneOffset={0} tabletOffset={1} desktopOffset={3}>
+              <List className="md-paper md-paper--1 iou-list">
+                {data.allLists.map((list, i) => (
+                  <ListItem
+                    key={i}
+                    primaryText={list.name}
+                    rightIcon={<ListMenu id={i} />}
+                    secondaryText={sumPrice(list.bought)}
+                    leftAvatar={<ListImage image={list.image} />}
+                  />
+                ))}
+              </List>
+            </Cell>
             <Button floating primary>add</Button>
-          </div>
+          </Grid>
         )
       }}
     </Query>

@@ -52,7 +52,7 @@ render(
   <ApolloProvider client={client}>
     <BrowserRouter>
       <Switch>
-        <Route exact path='/' component={App} />
+        <Route exact path='/' render={() => <App drawerVisible={false} />} />
       </Switch>
     </BrowserRouter>
   </ApolloProvider>,
