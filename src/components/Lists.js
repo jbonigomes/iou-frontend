@@ -59,7 +59,7 @@ const Lists = () => {
                 ))}
               </List>
             </Cell>
-            <Button floating primary>add</Button>
+            <Button floating primary fixed fixedPosition="br">add</Button>
           </Grid>
         )
       }}

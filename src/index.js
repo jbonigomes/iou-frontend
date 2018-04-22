@@ -44,7 +44,11 @@ const client = new ApolloClient({
 
 WebFontLoader.load({
   google: {
-    families: ['Roboto:300,400,500,700', 'Material Icons']
+    families: ['Roboto:300,400,500,700', 'Material Icons', '']
+  },
+  custom: {
+    families: ['FontAwesome'],
+    urls: ['//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css']
   }
 })
 

@@ -137,7 +137,7 @@ const App = ({ drawerVisible }) => {
               <Button
                 flat
                 onClick={doLogin(client)}
-                iconEl={<FontIcon>face</FontIcon>}>
+                iconEl={<FontIcon iconClassName="fa fa-facebook" />}>
                 Log in with Facebook
               </Button>
             )}
