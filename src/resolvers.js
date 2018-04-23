@@ -1,12 +1,20 @@
 import gql from 'graphql-tag'
 
+const GET_APP_STATE = gql`
+  query getAppState {
+    AppState @client {
+      showDrawer
+    }
+  }
+`
+
 export const defaults = {
   showDrawer: false
 }
 
-const typeDefs = `
+export const typeDefs = `
   type AppState {
-    drawerVisibility: Boolean!
+    showDrawer: Boolean!
   }
 
   type Mutation {
@@ -15,23 +23,30 @@ const typeDefs = `
   }
 
   type Query {
-    drawerVisibility: Boolean
+    showDrawer: Boolean
   }
 `
 
 export const resolvers = {
   Mutation: {
     toggleDrawer: (_, variables, { cache }) => {
-      const fragment = gql`
-        fragment completeTodo on TodoItem {
-          completed
-        }
-      `
+      const data = {
+        showDrawer: !cache.readQuery({ query: GET_APP_STATE }).AppState.showDrawer
+      }
 
-      const todo = cache.readFragment({ fragment, id });
-      const data = { ...todo, completed: !todo.completed };
-      cache.writeData({ id, data });
-      return null;
+      cache.writeData({ data });
+
+      return data;
     },
-  },
+
+    setDrawer: (_, variables, { cache }) => {
+      const data = {
+        showDrawer: variables.visibility
+      }
+
+      cache.writeData({ data });
+
+      return data;
+    }
+  }
 }

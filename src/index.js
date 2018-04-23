@@ -20,6 +20,11 @@ import { Route } from 'react-router-dom'
 import { Switch } from 'react-router-dom'
 import { BrowserRouter } from 'react-router-dom'
 
+// State
+import { typeDefs } from './resolvers';
+import { defaults } from './resolvers';
+import { resolvers } from './resolvers';
+
 // Components
 import App from './components/App'
 
@@ -39,7 +44,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: concat(authMiddleware, httpLink)
+  link: concat(authMiddleware, httpLink, withClientState({ resolvers, defaults, cache, typeDefs }))
 })
 
 WebFontLoader.load({

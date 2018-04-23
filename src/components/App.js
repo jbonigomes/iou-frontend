@@ -118,10 +118,10 @@ const App = ({ drawerVisible }) => {
                       )}
                     />
                     <Drawer
+                      header={<h1>hi</h1>}
                       visible={drawerVisible}
                       type={Drawer.DrawerTypes.TEMPORARY}
                       onVisibilityChange={handleVisibility}
-                      header={<h1>hi</h1>}
                     />
                     <Lists />
                   </div>
