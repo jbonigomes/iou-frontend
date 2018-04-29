@@ -1,8 +1,8 @@
-import gql from 'graphql-tag'
+import { gql } from 'apollo-boost'
 
 const GET_APP_STATE = gql`
   query getAppState {
-    AppState @client {
+    appState @client {
       showDrawer
     }
   }
@@ -12,7 +12,7 @@ export const defaults = {
   showDrawer: false
 }
 
-export const typeDefs = `
+export const schema = `
   type AppState {
     showDrawer: Boolean!
   }
@@ -23,7 +23,7 @@ export const typeDefs = `
   }
 
   type Query {
-    showDrawer: Boolean
+    appState: AppState
   }
 `
 
@@ -34,9 +34,9 @@ export const resolvers = {
         showDrawer: !cache.readQuery({ query: GET_APP_STATE }).AppState.showDrawer
       }
 
-      cache.writeData({ data });
+      cache.writeData({ data })
 
-      return data;
+      return data
     },
 
     setDrawer: (_, variables, { cache }) => {
@@ -44,9 +44,9 @@ export const resolvers = {
         showDrawer: variables.visibility
       }
 
-      cache.writeData({ data });
+      cache.writeData({ data })
 
-      return data;
+      return data
     }
   }
 }

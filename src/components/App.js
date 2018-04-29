@@ -1,6 +1,6 @@
 import React from 'react'
 
-import gql from 'graphql-tag'
+import { gql } from 'apollo-boost'
 
 import { withRouter } from 'react-router'
 
@@ -35,6 +35,14 @@ const GET_USER_ID = gql`
   }
 `
 
+const GET_APP_STATE = gql`
+  query getAppState {
+    appState @client {
+      showDrawer
+    }
+  }
+`
+
 const doLogin = (client) => {
   return () => {
     return login(client, (err, success) => {
@@ -56,15 +64,15 @@ const doLogout = () => {
 
 const getFbImageUrl = id => `https://graph.facebook.com/${id}/picture`
 
-const App = ({ drawerVisible }) => {
+const App = () => {
   const toggleDrawer = () => {
-    drawerVisible = !drawerVisible
-    console.log('toggling:', drawerVisible)
+  //   drawerVisible = !drawerVisible
+  //   console.log('toggling:', drawerVisible)
   }
 
   const handleVisibility = (visibility) => {
-    drawerVisible = visibility
-    console.log('hadling:', drawerVisible)
+  //   drawerVisible = visibility
+  //   console.log('hadling:', drawerVisible)
   }
 
   return (
@@ -99,32 +107,54 @@ const App = ({ drawerVisible }) => {
                 }
 
                 return (
-                  <div>
-                    <Toolbar
-                      colored
-                      nav={(
-                        <Button
-                          icon
-                          onClick={toggleDrawer}>
-                          menu
-                        </Button>
-                      )}
-                      title="Lists"
-                      actions={(
-                        <img
-                          onClick={doLogout}
-                          alt="Facebook avatar"
-                          src={getFbImageUrl(data.User.facebookUserId)} />
-                      )}
-                    />
-                    <Drawer
-                      header={<h1>hi</h1>}
-                      visible={drawerVisible}
-                      type={Drawer.DrawerTypes.TEMPORARY}
-                      onVisibilityChange={handleVisibility}
-                    />
-                    <Lists />
-                  </div>
+                  <Query query={GET_APP_STATE}>
+                    {({ loading, error, data }) => {
+                      if (loading) {
+                        return (
+                          <CircularProgress id="loading-state" />
+                        )
+                      }
+
+                      if (error) {
+                        return (
+                          <div>Error loading app state: {error.message}</div>
+                        )
+                      }
+
+                      console.log('ha', data)
+
+                      // src={getFbImageUrl(data.User.facebookUserId)}
+
+                      return (
+                        <div>
+                          <Toolbar
+                            colored
+                            nav={(
+                              <Button
+                                icon
+                                onClick={toggleDrawer}>
+                                menu
+                              </Button>
+                            )}
+                            title="Lists"
+                            actions={(
+                              <img
+                                onClick={doLogout}
+                                alt="Facebook avatar"
+                                src="test" />
+                            )}
+                          />
+                          <Drawer
+                            visible={true}
+                            header={<h1>hi</h1>}
+                            type={Drawer.DrawerTypes.TEMPORARY}
+                            onVisibilityChange={handleVisibility}
+                          />
+                          <Lists />
+                        </div>
+                      )
+                    }}
+                  </Query>
                 )
               }}
             </Query>
